@@ -10,7 +10,7 @@ class UserController{
             const {name, email, password} = req.body
             //проверка пользователя, если он существует, то ошибка
             const user = await db.query(`SELECT * FROM users WHERE user_email = $1`, [email])
-            if(user.rows.length !==0) {
+            if(user.rows.length > 0) {
                 return res.status(401).send("Пользователь уже существует")
             }
             //если успешно, то расшифруем пароль
@@ -19,11 +19,11 @@ class UserController{
 
             const bcryptPassword = await bcrypt.hash(password, salt)
             //запишем нового пользователя в бд
-            const newUser = await db.query(`INSERT INTO users (user_name, user_email, user_password) VALUES($1, $2, $3) RETURNING *`, [name, email, bcryptPassword])
+            let newUser = await db.query(`INSERT INTO users (user_name, user_email, user_password) VALUES($1, $2, $3) RETURNING *`, [name, email, bcryptPassword])
             //res.json(newUser.rows[0])
             // генерация jwt 
-            const token = jwtGenerator(newUser.rows[0].user_id)
-            res.json({token})
+            const token = jwtGenerator(newUser.rows[0].user_id);
+            return res.json({ token })
         } catch (error) {
             console.error(error.message)
             res.status(500).send("Server Error")
@@ -46,7 +46,7 @@ class UserController{
             }
             //выдать пользователю токен
             const token = jwtGenerator(user.rows[0].user_id)
-            res.json({token})
+            return res.json({ token })
         } catch (error) {
             console.error(error.message)
             res.status(500).send("Server Error")

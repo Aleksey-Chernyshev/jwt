@@ -6,7 +6,7 @@ const authorization = require("../middleware/authorization")
 
 router.post('/register', validInfo, UserController.createUser)
 router.post('/login', validInfo, UserController.loginUser)
-router.get('/is-verify', authorization, UserController.isVerifyUser)
+router.post('/is-verify', authorization, UserController.isVerifyUser)
 
 
 module.exports = router
