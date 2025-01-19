@@ -35,7 +35,7 @@ function App() {
   },[])
   return (
     <Fragment>
-      <Router>    //kjnkj
+      <Router>    
         <div className='container'>
           <Routes>
             <Route 
